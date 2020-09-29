@@ -1,0 +1,62 @@
+apply plugin: 'com.android.library'
+
+buildscript {
+    repositories {
+        google()
+        jcenter()
+    }
+}
+
+android {
+    compileSdkVersion 30
+    buildToolsVersion "30.0.2"
+
+    defaultConfig {
+        minSdkVersion 19
+        targetSdkVersion 30
+        versionCode 4
+        versionName "1.0.3"
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        consumerProguardFiles "consumer-rules.pro"
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+
+    dependencies {
+        implementation 'androidx.appcompat:appcompat:1.0.2'
+        implementation 'androidx.browser:browser:1.0.0'
+    }
+
+}
+
+ext {
+    bintrayRepo = 'TrustlyAndroidSDK'
+    bintrayName = 'trustly.android.library'
+
+    publishedGroupId = 'trustly.android.library'
+    libraryName = 'TrustlyAndroidLibrary'
+    artifact = 'TrustlyAndroidLibrary'
+
+    libraryDescription = 'Trustly\'s SDK for native android apps.'
+
+    siteUrl = 'https://github.com/trustly/TrustlyAndroidSdk'
+    gitUrl = 'https://github.com/trustly/TrustlyAndroidSdk.git'
+
+    libraryVersion = '1.0.3'
+
+    developerId = 'Trustly'
+    developerName = 'Team Bulle'
+    developerEmail = 'sdk@trustly.com'
+
+    licenseName = 'MIT License'
+    licenseUrl = 'https://opensource.org/licenses/mit-license.php'
+    allLicenses = ["MIT"]
+}
+
+apply from: 'publish.gradle'

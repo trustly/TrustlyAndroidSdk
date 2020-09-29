@@ -1,0 +1,2 @@
+include ':Trustly-Android-Library'
+rootProject.name = "Trustly-Android-SDK"
