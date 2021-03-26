@@ -26,12 +26,7 @@ public class TrustlyWebView extends WebView {
       // Enable javascript and DOM Storage
       configWebSettings(this);
 
-      this.setWebViewClient(new WebViewClient() {
-        @Override
-        public void onReceivedSslError(WebView view, SslErrorHandler handler, SslError error) {
-          handler.proceed();
-        }
-      });
+      this.setWebViewClient(new WebViewClient());
       this.setWebChromeClient(new TrustlyWebChromeClient());
 
       // Add TrustlyJavascriptInterface with or without event handler
