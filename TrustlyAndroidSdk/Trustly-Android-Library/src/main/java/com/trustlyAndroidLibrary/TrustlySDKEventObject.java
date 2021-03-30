@@ -44,6 +44,10 @@ public class TrustlySDKEventObject {
       this.eventName = eventName;
     }
 
+    public String getEventName() {
+      return eventName;
+    }
+
     public static TrustlyEventType valueOfEventName(String eventName) {
       for (TrustlyEventType e : values()) {
         if (e.eventName.equals(eventName)) {
