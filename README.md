@@ -3,7 +3,21 @@
 The Trustly Android SDK provides an easy way to implement the Trustly Checkout in your Android app. The SDK handles communication with the Web View and exposes Checkout events that allows you to customize your Checkout flow. 
 
 ## Integration
-Integrate the Trustly Android SDK through Gradle by adding the following to your dependencies in the build.gradle file.
+Integrate the Trustly Android SDK through Gradle.
+
+To authenticate with Github Packages you need to add your GitHub username and a GitHub Access Token to your project level build.gradle file.
+```gradle
+repositories {
+    maven("https://maven.pkg.github.com/trustly/TrustlyAndroidSdk") {
+        credentials {
+            username = "<GITHUB-USERNAME"
+            password = "<ACCESS-TOKEN>"
+        }
+    }
+}
+```
+
+Add the following to your dependencies in the build. gradle file.
 ```gradle
 implementation 'trustly.android.library:trustly-android-library:+'
 ```
@@ -47,3 +61,5 @@ and passing your implementation to the TrustlyWebView.
 TrustlyEventHandler eventHandler = new TrustlyEventHandlerImplementation();
 TrustlyWebView trustlyView = new TrustlyWebView(this, trustlyCheckoutUrl, eventHandler);
 ```
+
+**Note: If you choose to subscribe for TrustlyCheckoutEvents you will need to handle all opening of third party applications yourself!**
