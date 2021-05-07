@@ -2,6 +2,8 @@
 
 The Trustly Android SDK provides an easy way to implement the Trustly Checkout in your Android app. The SDK handles communication with the Web View and exposes Checkout events that allows you to customize your Checkout flow. 
 
+**`NOTE: The latest version of the SDK does not support the older version of the Trustly Checkout. If you do use the older Checkout, please use version 2.0.0 of the SDK. If you're not sure what version of the Trustly Checkout you are using, please contact our intergration support for help`**
+ 
 ## Integration
 Integrate the Trustly Android SDK through Gradle.
 
