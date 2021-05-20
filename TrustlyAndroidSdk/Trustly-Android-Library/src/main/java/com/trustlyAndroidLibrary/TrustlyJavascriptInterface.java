@@ -77,7 +77,18 @@ public class TrustlyJavascriptInterface {
    */
   @JavascriptInterface
   public void handleTrustlyEvent(String type, String url, String packageName) {
+
     TrustlySDKEventObject trustlySDKEventObject = new TrustlySDKEventObject(type, url, packageName, activity);
+
+    if (eventHandler == null) {
+        if (trustlySDKEventObject.getType() == TrustlySDKEventObject.TrustlyEventType.REDIRECT) {
+          openURLScheme(trustlySDKEventObject.getPackageName(), trustlySDKEventObject.getUrl());
+          return;
+        }
+        return;
+      }
+
+
     switch (trustlySDKEventObject.getType()) {
       case SUCCESS:
         eventHandler.onTrustlyCheckoutSuccess(trustlySDKEventObject);
