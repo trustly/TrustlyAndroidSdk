@@ -1,4 +1,6 @@
-apply plugin: 'com.android.library'
+
+
+
 
 buildscript {
     repositories {
@@ -7,15 +9,26 @@ buildscript {
     }
 }
 
+plugins {
+    id 'maven-publish'
+}
+
+apply plugin: 'com.android.library'
+
 android {
     compileSdkVersion 30
     buildToolsVersion "30.0.2"
 
+    lintOptions {
+        abortOnError false
+    }
+
+
     defaultConfig {
         minSdkVersion 19
         targetSdkVersion 30
-        versionCode 4
-        versionName "1.0.3"
+        versionCode 7
+        versionName "3.0.1"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles "consumer-rules.pro"
@@ -40,23 +53,66 @@ ext {
     bintrayName = 'trustly.android.library'
 
     publishedGroupId = 'trustly.android.library'
-    libraryName = 'TrustlyAndroidLibrary'
-    artifact = 'TrustlyAndroidLibrary'
+    libraryName = 'trustly-android-library'
+    artifact = 'trustly-android-library'
 
     libraryDescription = 'Trustly\'s SDK for native android apps.'
 
     siteUrl = 'https://github.com/trustly/TrustlyAndroidSdk'
     gitUrl = 'https://github.com/trustly/TrustlyAndroidSdk.git'
 
-    libraryVersion = '1.0.3'
+    libraryVersion = '3.0.1' //UPDATE WHEN RELEASING A NEW PACKAGE
 
     developerId = 'Trustly'
     developerName = 'Team Bulle'
-    developerEmail = 'sdk@trustly.com'
+        developerEmail = 'sdk@trustly.com'
 
     licenseName = 'MIT License'
     licenseUrl = 'https://opensource.org/licenses/mit-license.php'
     allLicenses = ["MIT"]
+
 }
 
-apply from: 'publish.gradle'
+afterEvaluate {
+    publishing {
+        publications {
+            release(MavenPublication) {
+                from(components.release)
+                artifactId = 'trustly-android-library'
+                groupId = publishedGroupId
+                version = libraryVersion
+
+                pom {
+                    name = artifact
+                    description = libraryDescription
+                    url = siteUrl
+
+                    licenses {
+                        license {
+                            name = licenseName
+                            url = licenseUrl
+                        }
+                    }
+                    developers {
+                        developer {
+                            id = developerId
+                            name = developerName
+                            email = developerEmail
+                        }
+                    }
+                }
+            }
+
+        }
+            repositories {
+                maven {
+                    name = "GitHubPackages"
+                    url = uri("https://maven.pkg.github.com/trustly/TrustlyAndroidSdk")
+                    credentials {
+                        username = "<GITHUB-USER-NAME>"
+                        password = "<GITHUB-PERSONAL-ACCESS-TOKEN>"
+                    }
+                }
+            }
+        }
+    }
