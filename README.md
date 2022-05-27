@@ -80,10 +80,10 @@ If you provide you own implementation of the TrustlyEventHandler, when a redirec
 ```
 void onTrustlyCheckoutRedirect(TrustlySDKEventObject eventObject);
 ```
- you will need to hanlde opening of third party applications yourself.
-In this case refrain from querying for particular schemes or packages before starting an activity, due to limited app visibility. This affects the return results of methods that give information about other apps, such as ```queryIntentActivities()```, ```getPackageInfo()```, and ```getInstalledApplications()```.
+ you will need to handle opening of third party applications yourself.
+In this case **refrain** from querying for particular schemes or packages before starting an activity, due to limited app visibility. This affects the return results of methods that give information about other apps, such as ```queryIntentActivities()```, ```getPackageInfo()```, and ```getInstalledApplications()```.
 
-Prefere using
+Prefer using
 ```
 startActivity(intent);
 ```
@@ -103,3 +103,8 @@ Sample code bellow
     }
   }
 ```
+## Notes about URLScheme
+
+Please note that when rendering the Trustly Checkout from a native app you are required to pass your application’s [URL scheme](https://developer.android.com/training/app-links/deep-linking) as an attribute to the order initiation request. By doing so, Trustly can redirect users back to your app after using external identification apps. 
+
+You can pass your URLScheme by including it in the "URLScheme" attribute when making an API call to Trustly. [You can read more about it here.](https://developers.trustly.com/emea/docs/android#custom-url-scheme)
