@@ -80,7 +80,7 @@ If you provide you own implementation of the TrustlyEventHandler, when a redirec
 ```
 void onTrustlyCheckoutRedirect(TrustlySDKEventObject eventObject);
 ```
- you will need to open opening of third party applications yourself.
+ you will need to hanlde opening of third party applications yourself.
 In this case refrain from querying for particular schemes or packages before starting an activity, due to limited app visibility. This affects the return results of methods that give information about other apps, such as ```queryIntentActivities()```, ```getPackageInfo()```, and ```getInstalledApplications()```.
 
 Prefere using
