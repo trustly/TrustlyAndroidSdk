@@ -108,3 +108,23 @@ Sample code bellow
 Please note that when rendering the Trustly Checkout from a native app you are required to pass your application’s [URL scheme](https://developer.android.com/training/app-links/deep-linking) as an attribute to the order initiation request. By doing so, Trustly can redirect users back to your app after using external identification apps. 
 
 You can pass your URLScheme by including it in the "URLScheme" attribute when making an API call to Trustly. [You can read more about it here.](https://developers.trustly.com/emea/docs/android#custom-url-scheme)
+
+:warning: It's important that the Activity hosting the checkout doesn't reload when the intent is received. Otherwise the Trustly checkout session will be lost. 
+When defining you intent filters make sure to set `android:launchMode="singleTop"` parameter in your manifest file.
+Below is an example intent filter setup in the manifest xml.
+```
+<activity
+            android:name=".YOUR_TRUSTLY_WEB_VIEW_ACTIVITY"
+            android:exported="true"
+            android:launchMode="singleTop">
+ <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:host="@string/scheme_host_sdk"
+                    android:scheme="@string/scheme" />
+</intent-filter>
+```
+
