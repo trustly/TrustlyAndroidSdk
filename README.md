@@ -5,28 +5,24 @@ The Trustly Android SDK provides an easy way to implement the Trustly Checkout i
 **`NOTE: The latest version of the SDK does not support the older version of the Trustly Checkout. If you do use the older Checkout, please use version 2.0.0 of the SDK. If you're not sure what version of the Trustly Checkout you are using, please contact our intergration support for help`**
  
 ## Integration
-Integrate the Trustly Android SDK through Gradle.
-
-To authenticate with Github Packages you need to add your GitHub username and a [GitHub Access Token](https://docs.github.com/en/github/authenticating-to-github/keeping-your-account-and-data-secure/creating-a-personal-access-token) to your project level build.gradle file. 
-
-Make sure that you your token have both read and write permissions for packages.
-
-**`NOTE: Do not commit these credentials to your repo.`**
+Integrate the Trustly Android SDK through Maven Central.
+Add the following to your Project level `build.gradle` file
 ```gradle
 repositories {
-      maven {
-            url = uri("https://maven.pkg.github.com/trustly/TrustlyAndroidSdk")
-            credentials {
-                username = "<GITHUB-USERNAME"
-                password = "<ACCESS-TOKEN>"
-            }
-    }
+  ...
+  mavenCentral()
+  ...
 }
 ```
 
-Add the following to your dependencies in the build. gradle file.
+Add Trustly SDK as dependency in your Module level the `build.gradle` file like so
 ```gradle
-implementation 'trustly.android.library:trustly-android-library:+'
+dependencies {
+  ...
+  //replace x.x.x with the current version
+  implementation 'com.trustly:trustly-android-library:x.x.x'
+  ...
+}
 ```
 
 You also need to add the `INTERNET` permission to your `AndroidManifest.xml`
