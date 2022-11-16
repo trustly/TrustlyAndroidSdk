@@ -1,19 +1,23 @@
-
-
-
-
-buildscript {
-    repositories {
-        google()
-        jcenter()
-    }
-}
-
-plugins {
-    id 'maven-publish'
-}
-
 apply plugin: 'com.android.library'
+
+ext {
+    // Sonatype coordinates
+    PUBLISH_GROUP_ID = 'com.trustly'
+    PUBLISH_VERSION = '3.0.1' //UPDATE WHEN RELEASING A NEW PACKAGE
+    PUBLISH_ARTIFACT_ID = 'trustly-android-library'
+    PUBLISH_DESCRIPTION = 'Trustly Android SDK'
+    PUBLISH_URL = 'https://github.com/trustly/TrustlyAndroidSdk'
+    PUBLISH_LICENSE_NAME = 'MIT License'
+    PUBLISH_LICENSE_URL = 'https://github.com/trustly/TrustlyAndroidSdk/blob/master/LICENSE'
+    PUBLISH_DEVELOPER_ID = 'android_development_trustly'
+    PUBLISH_DEVELOPER_NAME = 'Android Development Trustly'
+    PUBLISH_DEVELOPER_EMAIL = 'android.developer@trustly.com'
+    PUBLISH_SCM_CONNECTION = 'scm:git:github.com/trustly/TrustlyAndroidSdk.git'
+    PUBLISH_SCM_DEVELOPER_CONNECTION = 'scm:git:ssh://github.com/trustly/TrustlyAndroidSdk.git'
+    PUBLISH_SCM_URL = 'https://github.com/trustly/TrustlyAndroidSdk/tree/master'
+}
+
+apply from: "${rootProject.projectDir}/scripts/publish-module.gradle"
 
 android {
     compileSdkVersion 30
@@ -47,72 +51,3 @@ android {
     }
 
 }
-
-ext {
-    bintrayRepo = 'TrustlyAndroidSDK'
-    bintrayName = 'trustly.android.library'
-
-    publishedGroupId = 'trustly.android.library'
-    libraryName = 'trustly-android-library'
-    artifact = 'trustly-android-library'
-
-    libraryDescription = 'Trustly\'s SDK for native android apps.'
-
-    siteUrl = 'https://github.com/trustly/TrustlyAndroidSdk'
-    gitUrl = 'https://github.com/trustly/TrustlyAndroidSdk.git'
-
-    libraryVersion = '3.0.1' //UPDATE WHEN RELEASING A NEW PACKAGE
-
-    developerId = 'Trustly'
-    developerName = 'Team Bulle'
-        developerEmail = 'sdk@trustly.com'
-
-    licenseName = 'MIT License'
-    licenseUrl = 'https://opensource.org/licenses/mit-license.php'
-    allLicenses = ["MIT"]
-
-}
-
-afterEvaluate {
-    publishing {
-        publications {
-            release(MavenPublication) {
-                from(components.release)
-                artifactId = 'trustly-android-library'
-                groupId = publishedGroupId
-                version = libraryVersion
-
-                pom {
-                    name = artifact
-                    description = libraryDescription
-                    url = siteUrl
-
-                    licenses {
-                        license {
-                            name = licenseName
-                            url = licenseUrl
-                        }
-                    }
-                    developers {
-                        developer {
-                            id = developerId
-                            name = developerName
-                            email = developerEmail
-                        }
-                    }
-                }
-            }
-
-        }
-            repositories {
-                maven {
-                    name = "GitHubPackages"
-                    url = uri("https://maven.pkg.github.com/trustly/TrustlyAndroidSdk")
-                    credentials {
-                        username = "<GITHUB-USER-NAME>"
-                        password = "<GITHUB-PERSONAL-ACCESS-TOKEN>"
-                    }
-                }
-            }
-        }
-    }
