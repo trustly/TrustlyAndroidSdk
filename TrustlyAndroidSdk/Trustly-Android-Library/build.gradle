@@ -3,7 +3,7 @@ apply plugin: 'com.android.library'
 ext {
     // Sonatype coordinates
     PUBLISH_GROUP_ID = 'com.trustly'
-    PUBLISH_VERSION = '3.0.1' //UPDATE WHEN RELEASING A NEW PACKAGE
+    PUBLISH_VERSION = '3.0.1' //UPDATE WHEN TRUSTLY RELEASES A NEW PACKAGE
     PUBLISH_ARTIFACT_ID = 'trustly-android-library'
     PUBLISH_DESCRIPTION = 'Trustly Android SDK'
     PUBLISH_URL = 'https://github.com/trustly/TrustlyAndroidSdk'
