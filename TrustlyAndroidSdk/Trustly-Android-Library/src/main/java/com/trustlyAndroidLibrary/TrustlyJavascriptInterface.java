@@ -25,51 +25,33 @@
 package com.trustlyAndroidLibrary;
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
-import android.content.pm.ApplicationInfo;
-import android.content.pm.PackageManager;
 import android.net.Uri;
+import android.util.Log;
 import android.webkit.JavascriptInterface;
 
-public class TrustlyJavascriptInterface {
+class TrustlyJavascriptInterface {
 
   public static final String NAME = "TrustlyAndroid";
 
   Activity activity;
-  TrustlyEventHandler eventHandler;
+  TrustlyWebView webViewHandler;
 
-  public TrustlyJavascriptInterface(Activity a) {
+  public TrustlyJavascriptInterface(Activity a, TrustlyWebView webViewHandler) {
     activity = a;
+    this.webViewHandler = webViewHandler;
   }
 
-  public TrustlyJavascriptInterface(Activity activity, TrustlyEventHandler eventHandler) {
-    this.activity = activity;
-    this.eventHandler = eventHandler;
-  }
 
-  /**
-   * Will open the URL, then return result
-   *
-   * @param String packageName
-   * @param String URIScheme
-   * @return boolean isOpened
-   */
-  @JavascriptInterface
-  public boolean openURLScheme(String packageName, String URIScheme) {
-    if (isPackageInstalledAndEnabled(packageName, activity)) {
-      Intent intent = new Intent();
-      intent.setPackage(packageName);
-      intent.setAction(Intent.ACTION_VIEW);
-      intent.setData(Uri.parse(URIScheme));
-      activity.startActivityForResult(intent, 0);
-      return true;
-    } else {
+  void handleRedirect(String URLString) {
+    try {
       Intent intent = new Intent(Intent.ACTION_VIEW);
-      intent.setData(Uri.parse(URIScheme));
+      intent.setData(Uri.parse(URLString));
       activity.startActivityForResult(intent, 0);
+    } catch (Error e) {
+      Log.d("TrustlyAndroidSDK", "handleRedirect: Could not redirect to URL " + URLString);
     }
-    return false;
+
   }
 
   /**
@@ -78,50 +60,27 @@ public class TrustlyJavascriptInterface {
   @JavascriptInterface
   public void handleTrustlyEvent(String type, String url, String packageName) {
 
-    TrustlySDKEventObject trustlySDKEventObject = new TrustlySDKEventObject(type, url, packageName, activity);
-
-    if (eventHandler == null) {
-        if (trustlySDKEventObject.getType() == TrustlySDKEventObject.TrustlyEventType.REDIRECT) {
-          openURLScheme(trustlySDKEventObject.getPackageName(), trustlySDKEventObject.getUrl());
-          return;
-        }
-        return;
-      }
-
-
-    switch (trustlySDKEventObject.getType()) {
+    switch (type) {
       case SUCCESS:
-        eventHandler.onTrustlyCheckoutSuccess(trustlySDKEventObject);
+        if (this.webViewHandler.successHandler != null) {
+          this.webViewHandler.successHandler.onTrustlyCheckoutSuccess();
+        }
         break;
       case REDIRECT:
-        eventHandler.onTrustlyCheckoutRedirect(trustlySDKEventObject);
+        handleRedirect(url);
         break;
       case ABORT:
-        eventHandler.onTrustlyCheckoutAbort(trustlySDKEventObject);
+        if (this.webViewHandler.abortHandler != null) {
+          this.webViewHandler.abortHandler.onTrustlyCheckoutAbort();
+        }
         break;
       case ERROR:
-        eventHandler.onTrustlyCheckoutError(trustlySDKEventObject);
+        if (this.webViewHandler.errorHandler != null) {
+          this.webViewHandler.errorHandler.onTrustlyCheckoutError();
+        }
         break;
       default:
-        throw new UnsupportedOperationException(String.format("Unsupported event type: %s", trustlySDKEventObject.getType()));
+        throw new UnsupportedOperationException(String.format("Unsupported event type: %s", type);
     }
-  }
-
-  /**
-   * Helper function that will verify that URL can be opened, then return result
-   *
-   * @param String packageName
-   * @param Context context
-   * @return boolean canBeOpened
-   */
-  private boolean isPackageInstalledAndEnabled(String packageName, Context context) {
-    PackageManager pm = context.getPackageManager();
-    try {
-      pm.getPackageInfo(packageName, PackageManager.GET_ACTIVITIES);
-      ApplicationInfo ai = context.getPackageManager().getApplicationInfo(packageName, 0);
-      return ai.enabled;
-    } catch (PackageManager.NameNotFoundException e) {
-    }
-    return false;
   }
 }
