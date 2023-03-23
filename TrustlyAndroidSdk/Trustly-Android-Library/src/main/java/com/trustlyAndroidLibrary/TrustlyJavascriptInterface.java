@@ -30,57 +30,81 @@ import android.net.Uri;
 import android.util.Log;
 import android.webkit.JavascriptInterface;
 
+enum TrustlyEventType {
+    SUCCESS("onTrustlyCheckoutSuccess"),
+    REDIRECT("onTrustlyCheckoutRedirect"),
+    ABORT("onTrustlyCheckoutAbort"),
+    ERROR("onTrustlyCheckoutError");
+
+    final String eventTypeLabel;
+
+    TrustlyEventType(String eventTypeLabel) {
+        this.eventTypeLabel = eventTypeLabel;
+    }
+
+    static TrustlyEventType valueForEventTypeLabel(String eventName) {
+        for (TrustlyEventType e : values()) {
+            if (e.eventTypeLabel.equals(eventName)) {
+                return e;
+            }
+        }
+        return null;
+    }
+}
+
+
 class TrustlyJavascriptInterface {
 
-  public static final String NAME = "TrustlyAndroid";
+    public static final String NAME = "TrustlyAndroid";
 
-  Activity activity;
-  TrustlyWebView webViewHandler;
+    private Activity activity;
+    private TrustlyWebView webViewHandler;
 
-  public TrustlyJavascriptInterface(Activity a, TrustlyWebView webViewHandler) {
-    activity = a;
-    this.webViewHandler = webViewHandler;
-  }
-
-
-  void handleRedirect(String URLString) {
-    try {
-      Intent intent = new Intent(Intent.ACTION_VIEW);
-      intent.setData(Uri.parse(URLString));
-      activity.startActivityForResult(intent, 0);
-    } catch (Error e) {
-      Log.d("TrustlyAndroidSDK", "handleRedirect: Could not redirect to URL " + URLString);
+    public TrustlyJavascriptInterface(Activity activity, TrustlyWebView webViewHandler) {
+        this.activity = activity;
+        this.webViewHandler = webViewHandler;
     }
 
-  }
 
-  /**
-   * Creates an event object from the parameters and passes it to the correct event handler method
-   */
-  @JavascriptInterface
-  public void handleTrustlyEvent(String type, String url, String packageName) {
+    void handleRedirect(String URLString) {
+        try {
+            Intent intent = new Intent(Intent.ACTION_VIEW);
+            intent.setData(Uri.parse(URLString));
+            activity.startActivityForResult(intent, 0);
+        } catch (Error e) {
+            Log.d("TrustlyAndroidSDK", "handleRedirect: Could not redirect to URL " + URLString);
+        }
 
-    switch (type) {
-      case SUCCESS:
-        if (this.webViewHandler.successHandler != null) {
-          this.webViewHandler.successHandler.onTrustlyCheckoutSuccess();
-        }
-        break;
-      case REDIRECT:
-        handleRedirect(url);
-        break;
-      case ABORT:
-        if (this.webViewHandler.abortHandler != null) {
-          this.webViewHandler.abortHandler.onTrustlyCheckoutAbort();
-        }
-        break;
-      case ERROR:
-        if (this.webViewHandler.errorHandler != null) {
-          this.webViewHandler.errorHandler.onTrustlyCheckoutError();
-        }
-        break;
-      default:
-        throw new UnsupportedOperationException(String.format("Unsupported event type: %s", type);
     }
-  }
+
+    /**
+     * Creates an event object from the parameters and passes it to the correct event handler method
+     */
+    @JavascriptInterface
+    public void handleTrustlyEvent(String typeLabel, String url, String packageName) {
+
+        TrustlyEventType eventType = TrustlyEventType.valueForEventTypeLabel(typeLabel);
+        switch (eventType) {
+            case SUCCESS:
+                if (this.webViewHandler.successHandler != null) {
+                    this.webViewHandler.successHandler.onTrustlyCheckoutSuccess();
+                }
+                break;
+            case REDIRECT:
+                handleRedirect(url);
+                break;
+            case ABORT:
+                if (this.webViewHandler.abortHandler != null) {
+                    this.webViewHandler.abortHandler.onTrustlyCheckoutAbort();
+                }
+                break;
+            case ERROR:
+                if (this.webViewHandler.errorHandler != null) {
+                    this.webViewHandler.errorHandler.onTrustlyCheckoutError();
+                }
+                break;
+            default:
+                throw new UnsupportedOperationException(String.format("Unsupported event type: %s", typeLabel));
+        }
+    }
 }

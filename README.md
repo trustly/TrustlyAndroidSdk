@@ -50,7 +50,7 @@ main.addView(trustlyView);
 If you want more control of your Checkout flow you can choose to provide custom handlers.
 
 Provide `successHanlder`, `abortHanlder` and `errorHandler` lambdas.
-In case no custom functionality is provided, the webview will load the `SuccessURL`, in case of a success event, or the `FailURL` in case of a error or an abort event.
+In case no custom functionality is provided, the webview will load the `SuccessURL` in case of a success event, or the `FailURL` in case of a error or an abort event.
 Read more https://eu.developers.trustly.com/doc/docs/order-initiation
 
 
