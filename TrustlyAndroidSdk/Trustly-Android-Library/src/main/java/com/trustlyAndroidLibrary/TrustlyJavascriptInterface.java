@@ -57,8 +57,8 @@ class TrustlyJavascriptInterface {
 
     public static final String NAME = "TrustlyAndroid";
 
-    private Activity activity;
-    private TrustlyWebView webViewHandler;
+    private final Activity activity;
+    private final TrustlyWebView webViewHandler;
 
     public TrustlyJavascriptInterface(Activity activity, TrustlyWebView webViewHandler) {
         this.activity = activity;
@@ -66,7 +66,7 @@ class TrustlyJavascriptInterface {
     }
 
 
-    void handleRedirect(String URLString) {
+    private void handleRedirect(String URLString) {
         try {
             Intent intent = new Intent(Intent.ACTION_VIEW);
             intent.setData(Uri.parse(URLString));
@@ -86,21 +86,21 @@ class TrustlyJavascriptInterface {
         TrustlyEventType eventType = TrustlyEventType.valueForEventTypeLabel(typeLabel);
         switch (eventType) {
             case SUCCESS:
-                if (this.webViewHandler.successHandler != null) {
-                    this.webViewHandler.successHandler.onTrustlyCheckoutSuccess();
+                if (webViewHandler.successHandler != null) {
+                    webViewHandler.successHandler.onTrustlyCheckoutSuccess();
                 }
                 break;
             case REDIRECT:
                 handleRedirect(url);
                 break;
             case ABORT:
-                if (this.webViewHandler.abortHandler != null) {
-                    this.webViewHandler.abortHandler.onTrustlyCheckoutAbort();
+                if (webViewHandler.abortHandler != null) {
+                    webViewHandler.abortHandler.onTrustlyCheckoutAbort();
                 }
                 break;
             case ERROR:
-                if (this.webViewHandler.errorHandler != null) {
-                    this.webViewHandler.errorHandler.onTrustlyCheckoutError();
+                if (webViewHandler.errorHandler != null) {
+                    webViewHandler.errorHandler.onTrustlyCheckoutError();
                 }
                 break;
             default:

@@ -41,7 +41,7 @@ public class TrustlyWebView extends WebView {
   private void tryOpeningUrlInWebView(AppCompatActivity activity, String url) {
     try {
       // Enable javascript and DOM Storage
-      configWebSettings(this);
+      configWebSettings();
 
       this.setWebViewClient(new WebViewClient());
       this.setWebChromeClient(new TrustlyWebChromeClient());
@@ -58,9 +58,9 @@ public class TrustlyWebView extends WebView {
     }
   }
 
-  private void configWebSettings(WebView mainView) throws WebSettingsException {
+  private void configWebSettings() throws WebSettingsException {
     try {
-      WebSettings webSettings = mainView.getSettings();
+      WebSettings webSettings = getSettings();
       webSettings.setJavaScriptEnabled(true);
       webSettings.setDomStorageEnabled(true);
       webSettings.setJavaScriptCanOpenWindowsAutomatically(true);
