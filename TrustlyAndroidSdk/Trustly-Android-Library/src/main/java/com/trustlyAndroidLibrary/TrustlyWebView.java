@@ -43,14 +43,14 @@ public class TrustlyWebView extends WebView {
       // Enable javascript and DOM Storage
       configWebSettings();
 
-      this.setWebViewClient(new WebViewClient());
-      this.setWebChromeClient(new TrustlyWebChromeClient());
-      this.addJavascriptInterface(new TrustlyJavascriptInterface(activity, this), TrustlyJavascriptInterface.NAME);
+      setWebViewClient(new WebViewClient());
+      setWebChromeClient(new TrustlyWebChromeClient());
+      addJavascriptInterface(new TrustlyJavascriptInterface(activity, this), TrustlyJavascriptInterface.NAME);
 
-      this.setLayoutParams(
+      setLayoutParams(
           new LayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)));
 
-      this.loadUrl(url);
+      loadUrl(url);
     } catch (WebSettingsException e) {
       Log.d("WebView", "configWebView: Could not config WebSettings");
     } catch (Exception e) {
