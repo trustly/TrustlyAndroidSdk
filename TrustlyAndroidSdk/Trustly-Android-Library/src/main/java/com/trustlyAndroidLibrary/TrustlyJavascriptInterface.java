@@ -25,103 +25,86 @@
 package com.trustlyAndroidLibrary;
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
-import android.content.pm.ApplicationInfo;
-import android.content.pm.PackageManager;
 import android.net.Uri;
+import android.util.Log;
 import android.webkit.JavascriptInterface;
 
-public class TrustlyJavascriptInterface {
+enum TrustlyEventType {
+    SUCCESS("onTrustlyCheckoutSuccess"),
+    REDIRECT("onTrustlyCheckoutRedirect"),
+    ABORT("onTrustlyCheckoutAbort"),
+    ERROR("onTrustlyCheckoutError");
 
-  public static final String NAME = "TrustlyAndroid";
+    final String eventTypeLabel;
 
-  Activity activity;
-  TrustlyEventHandler eventHandler;
-
-  public TrustlyJavascriptInterface(Activity a) {
-    activity = a;
-  }
-
-  public TrustlyJavascriptInterface(Activity activity, TrustlyEventHandler eventHandler) {
-    this.activity = activity;
-    this.eventHandler = eventHandler;
-  }
-
-  /**
-   * Will open the URL, then return result
-   *
-   * @param String packageName
-   * @param String URIScheme
-   * @return boolean isOpened
-   */
-  @JavascriptInterface
-  public boolean openURLScheme(String packageName, String URIScheme) {
-    if (isPackageInstalledAndEnabled(packageName, activity)) {
-      Intent intent = new Intent();
-      intent.setPackage(packageName);
-      intent.setAction(Intent.ACTION_VIEW);
-      intent.setData(Uri.parse(URIScheme));
-      activity.startActivityForResult(intent, 0);
-      return true;
-    } else {
-      Intent intent = new Intent(Intent.ACTION_VIEW);
-      intent.setData(Uri.parse(URIScheme));
-      activity.startActivityForResult(intent, 0);
+    TrustlyEventType(String eventTypeLabel) {
+        this.eventTypeLabel = eventTypeLabel;
     }
-    return false;
-  }
 
-  /**
-   * Creates an event object from the parameters and passes it to the correct event handler method
-   */
-  @JavascriptInterface
-  public void handleTrustlyEvent(String type, String url, String packageName) {
-
-    TrustlySDKEventObject trustlySDKEventObject = new TrustlySDKEventObject(type, url, packageName, activity);
-
-    if (eventHandler == null) {
-        if (trustlySDKEventObject.getType() == TrustlySDKEventObject.TrustlyEventType.REDIRECT) {
-          openURLScheme(trustlySDKEventObject.getPackageName(), trustlySDKEventObject.getUrl());
-          return;
+    static TrustlyEventType valueForEventTypeLabel(String eventName) {
+        for (TrustlyEventType e : values()) {
+            if (e.eventTypeLabel.equals(eventName)) {
+                return e;
+            }
         }
-        return;
-      }
-
-
-    switch (trustlySDKEventObject.getType()) {
-      case SUCCESS:
-        eventHandler.onTrustlyCheckoutSuccess(trustlySDKEventObject);
-        break;
-      case REDIRECT:
-        eventHandler.onTrustlyCheckoutRedirect(trustlySDKEventObject);
-        break;
-      case ABORT:
-        eventHandler.onTrustlyCheckoutAbort(trustlySDKEventObject);
-        break;
-      case ERROR:
-        eventHandler.onTrustlyCheckoutError(trustlySDKEventObject);
-        break;
-      default:
-        throw new UnsupportedOperationException(String.format("Unsupported event type: %s", trustlySDKEventObject.getType()));
+        return null;
     }
-  }
+}
 
-  /**
-   * Helper function that will verify that URL can be opened, then return result
-   *
-   * @param String packageName
-   * @param Context context
-   * @return boolean canBeOpened
-   */
-  private boolean isPackageInstalledAndEnabled(String packageName, Context context) {
-    PackageManager pm = context.getPackageManager();
-    try {
-      pm.getPackageInfo(packageName, PackageManager.GET_ACTIVITIES);
-      ApplicationInfo ai = context.getPackageManager().getApplicationInfo(packageName, 0);
-      return ai.enabled;
-    } catch (PackageManager.NameNotFoundException e) {
+
+class TrustlyJavascriptInterface {
+
+    public static final String NAME = "TrustlyAndroid";
+
+    private final Activity activity;
+    private final TrustlyWebView webViewHandler;
+
+    public TrustlyJavascriptInterface(Activity activity, TrustlyWebView webViewHandler) {
+        this.activity = activity;
+        this.webViewHandler = webViewHandler;
     }
-    return false;
-  }
+
+
+    private void handleRedirect(String URLString) {
+        try {
+            Intent intent = new Intent(Intent.ACTION_VIEW);
+            intent.setData(Uri.parse(URLString));
+            activity.startActivityForResult(intent, 0);
+        } catch (Error e) {
+            Log.d("TrustlyAndroidSDK", "handleRedirect: Could not redirect to URL " + URLString);
+        }
+
+    }
+
+    /**
+     * Creates an event object from the parameters and passes it to the correct event handler method
+     */
+    @JavascriptInterface
+    public void handleTrustlyEvent(String typeLabel, String url, String packageName) {
+
+        TrustlyEventType eventType = TrustlyEventType.valueForEventTypeLabel(typeLabel);
+        switch (eventType) {
+            case SUCCESS:
+                if (webViewHandler.successHandler != null) {
+                    webViewHandler.successHandler.onTrustlyCheckoutSuccess();
+                }
+                break;
+            case REDIRECT:
+                handleRedirect(url);
+                break;
+            case ABORT:
+                if (webViewHandler.abortHandler != null) {
+                    webViewHandler.abortHandler.onTrustlyCheckoutAbort();
+                }
+                break;
+            case ERROR:
+                if (webViewHandler.errorHandler != null) {
+                    webViewHandler.errorHandler.onTrustlyCheckoutError();
+                }
+                break;
+            default:
+                throw new UnsupportedOperationException(String.format("Unsupported event type: %s", typeLabel));
+        }
+    }
 }
