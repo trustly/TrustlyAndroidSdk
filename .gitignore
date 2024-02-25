@@ -1,2 +1,11 @@
 .DS_Store
 .idea
+sub*.iml
+.gradle
+/local.properties
+/build
+/captures
+.externalNativeBuild
+.cxx
+/keystore.properties
+/*.gpg
