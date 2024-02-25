@@ -53,3 +53,7 @@ android {
     }
 
 }
+
+tasks.register('buildReleaseAar', GradleBuild) {
+    tasks = ['assembleRelease']
+}
