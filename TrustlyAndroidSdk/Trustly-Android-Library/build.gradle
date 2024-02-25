@@ -3,7 +3,7 @@ apply plugin: 'com.android.library'
 ext {
     // Sonatype coordinates
     PUBLISH_GROUP_ID = 'com.trustly'
-    PUBLISH_VERSION = '4.0.0' //UPDATE WHEN TRUSTLY RELEASES A NEW PACKAGE
+    PUBLISH_VERSION = '4.0.2'
     PUBLISH_ARTIFACT_ID = 'trustly-android-library'
     PUBLISH_DESCRIPTION = 'Trustly Android SDK'
     PUBLISH_URL = 'https://github.com/trustly/TrustlyAndroidSdk'
@@ -20,9 +20,6 @@ ext {
 apply from: "${rootProject.projectDir}/scripts/publish-module.gradle"
 
 android {
-    compileSdkVersion 31
-    buildToolsVersion "30.0.2"
-
     lintOptions {
         abortOnError false
     }
@@ -30,7 +27,8 @@ android {
 
     defaultConfig {
         minSdkVersion 21
-        targetSdkVersion 31
+        compileSdk 33
+        targetSdkVersion 33
         versionCode 7
         versionName "3.0.1"
 
@@ -46,12 +44,12 @@ android {
     }
 
     dependencies {
-        implementation 'androidx.appcompat:appcompat:1.0.2'
-        implementation 'androidx.browser:browser:1.0.0'
+        implementation 'androidx.appcompat:appcompat:1.6.1'
+        implementation 'androidx.browser:browser:1.5.0'
     }
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
     }
 
 }
