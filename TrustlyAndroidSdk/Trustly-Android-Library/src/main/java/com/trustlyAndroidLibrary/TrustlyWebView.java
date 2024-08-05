@@ -1,12 +1,11 @@
 package com.trustlyAndroidLibrary;
 
+import android.app.Activity;
 import android.util.Log;
 import android.view.ViewGroup;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
-
-import androidx.appcompat.app.AppCompatActivity;
 
 /**
  * A wrapper around WebView allowing communication with the Trustly checkout.
@@ -33,12 +32,12 @@ public class TrustlyWebView extends WebView {
    */
   public TrustlyCheckoutAbortHandler abortHandler = null;
 
-  public TrustlyWebView(AppCompatActivity activity, String url) {
+  public TrustlyWebView(Activity activity, String url) {
     super(activity);
     tryOpeningUrlInWebView(activity, url);
   }
 
-  private void tryOpeningUrlInWebView(AppCompatActivity activity, String url) {
+  private void tryOpeningUrlInWebView(Activity activity, String url) {
     try {
       // Enable javascript and DOM Storage
       configWebSettings();
