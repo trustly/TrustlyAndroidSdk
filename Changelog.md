@@ -8,7 +8,7 @@
 - **Gradle**: Updated to version 7.6.4.
 - **Compile SDK API version**: Updated to 33.
 - **Java compile version**: Updated to v17.
-- **Appcompat**: Updated to version 1.6.1.
+- **Appcompat**: Removed.
 - **Android browser** updated to version 1.5.0
 
 ## [4.0.0] - 2023-03-21
