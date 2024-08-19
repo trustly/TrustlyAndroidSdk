@@ -6,10 +6,6 @@
 
 - Changed type of `activity` argument in `TrustlyWebView` class from `AppCompatActivity` to `Activity`.
 
-### Removed
-
-- **Appcompat**.
-
 ## [4.0.1] - 2024-02-26
 
 ### Changed
