@@ -1,5 +1,18 @@
 # Changelog
 
+## [4.1.0] - 2025-11-11
+
+### Changed
+
+- **Android Gradle Plugin**: Updated to version 8.12.2.
+- **Gradle**: Updated to version 9.0.0.
+- **Compile SDK API version**: Updated to 36.
+- **Target SDK version**: Updated to 36.
+- **Java compile version**: Updated to v21
+- **Appcompat**: Updated to version 1.7.1.
+- **Android browser**: Updated to version 1.9.0.
+- **Gradle Nexus Publish Plugin**: Updated to version 2.0.0.
+
 ## [4.0.2] - 2024-08-15
 
 ### Changed
