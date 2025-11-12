@@ -20,15 +20,15 @@ ext {
 apply from: "${rootProject.projectDir}/scripts/publish-module.gradle"
 
 android {
-    namespace 'com.trustlyAndroidLibrary'
+    namespace = 'com.trustlyAndroidLibrary'
     
     lint {
-        abortOnError false
+        abortOnError = false
     }
 
     defaultConfig {
         minSdkVersion 21
-        compileSdk 36
+        compileSdk = 36
         targetSdkVersion 36
         versionCode 7
         versionName "4.0.2"
