@@ -11,7 +11,7 @@
 - **Java compile version**: Updated to v21
 - **Appcompat**: Updated to version 1.7.1.
 - **Android browser**: Updated to version 1.9.0.
-- **Gradle Nexus Publish Plugin**: Updated to version 2.0.0.
+- **Publishing**: Migrated from legacy OSSRH to the new Sonatype Central Portal.
 
 ## [4.0.2] - 2024-08-15
 
