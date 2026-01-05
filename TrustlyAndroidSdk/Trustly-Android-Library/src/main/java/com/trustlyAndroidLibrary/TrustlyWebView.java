@@ -32,12 +32,18 @@ public class TrustlyWebView extends WebView {
    */
   public TrustlyCheckoutAbortHandler abortHandler = null;
 
-  public TrustlyWebView(Activity activity, String url) {
+
+  public TrustlyWebView(Activity activity, String url, String host) {
     super(activity);
-    tryOpeningUrlInWebView(activity, url);
+    tryOpeningUrlInWebView(activity, url, host);
+  }
+  
+  public TrustlyWebView(Activity activity, String url) {
+    this(activity, url, null);
   }
 
-  private void tryOpeningUrlInWebView(Activity activity, String url) {
+
+  private void tryOpeningUrlInWebView(Activity activity, String url, String host) {
     try {
       // Enable javascript and DOM Storage
       configWebSettings();
@@ -49,7 +55,11 @@ public class TrustlyWebView extends WebView {
       setLayoutParams(
           new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
 
-      loadUrl(url);
+      if (isValidUrl(url, host)) {
+        loadUrl(url);
+      } else {
+        Log.e("WebView", "tryOpeningUrlInWebView: Invalid URL: " + url);
+      }
     } catch (WebSettingsException e) {
       Log.d("WebView", "configWebView: Could not config WebSettings");
     } catch (Exception e) {
@@ -66,6 +76,32 @@ public class TrustlyWebView extends WebView {
       webSettings.setSupportMultipleWindows(true);
     } catch (Exception e) {
       throw new WebSettingsException(e.getMessage());
+    }
+  }
+
+  private boolean isValidUrl(String url, String host) {
+    if (url == null || url.isEmpty()) {
+      return false;
+    }
+
+    if (!url.startsWith("https://")) {
+      return false;
+    }
+
+    String hostDomainPattern;
+    if (host != null && !host.isEmpty()) {
+      hostDomainPattern = host;
+    } else {
+      // Default is the Trustly domain: "trustly.com", "trustlymerchant.com", "trustly.cloud",...
+      hostDomainPattern = "trustly.*\\.(com|cloud)";
+    }
+
+    try {
+      java.util.regex.Pattern pattern = java.util.regex.Pattern.compile(hostDomainPattern, java.util.regex.Pattern.CASE_INSENSITIVE);
+      return pattern.matcher(url).find();
+    } catch (Exception e) {
+      Log.e("WebView", "isUrlValid: Error validating URL pattern: " + e.getMessage());
+      return false;
     }
   }
 }
