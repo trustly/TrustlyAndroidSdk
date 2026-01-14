@@ -33,17 +33,13 @@ public class TrustlyWebView extends WebView {
   public TrustlyCheckoutAbortHandler abortHandler = null;
 
 
-  public TrustlyWebView(Activity activity, String url, String host) {
-    super(activity);
-    tryOpeningUrlInWebView(activity, url, host);
-  }
-  
   public TrustlyWebView(Activity activity, String url) {
-    this(activity, url, null);
+    super(activity);
+    tryOpeningUrlInWebView(activity, url);
   }
 
 
-  private void tryOpeningUrlInWebView(Activity activity, String url, String host) {
+  private void tryOpeningUrlInWebView(Activity activity, String url) {
     try {
       // Enable javascript and DOM Storage
       configWebSettings();
@@ -53,9 +49,9 @@ public class TrustlyWebView extends WebView {
       addJavascriptInterface(new TrustlyJavascriptInterface(activity, this), TrustlyJavascriptInterface.NAME);
 
       setLayoutParams(
-          new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+              new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
 
-      if (isValidUrl(url, host)) {
+      if (isValidUrl(url)) {
         loadUrl(url);
       } else {
         Log.e("WebView", "tryOpeningUrlInWebView: Invalid URL: " + url);
@@ -79,29 +75,19 @@ public class TrustlyWebView extends WebView {
     }
   }
 
-  private boolean isValidUrl(String url, String host) {
-    if (url == null || url.isEmpty()) {
+  private boolean isValidUrl(String url) {
+    if (url == null || url.trim().isEmpty()) {
       return false;
     }
 
-    if (!url.startsWith("https://")) {
+    if (url.trim().toLowerCase().startsWith("javascript:")) {
       return false;
     }
 
-    String hostDomainPattern;
-    if (host != null && !host.isEmpty()) {
-      hostDomainPattern = host;
-    } else {
-      // Default is the Trustly domain: "trustly.com", "trustlymerchant.com", "trustly.cloud",...
-      hostDomainPattern = "trustly.*\\.(com|cloud)";
-    }
-
-    try {
-      java.util.regex.Pattern pattern = java.util.regex.Pattern.compile(hostDomainPattern, java.util.regex.Pattern.CASE_INSENSITIVE);
-      return pattern.matcher(url).find();
-    } catch (Exception e) {
-      Log.e("WebView", "isUrlValid: Error validating URL pattern: " + e.getMessage());
+    if (url.trim().toLowerCase().startsWith("file://")) {
       return false;
     }
+    
+    return url.startsWith("https://");
   }
 }
