@@ -32,10 +32,12 @@ public class TrustlyWebView extends WebView {
    */
   public TrustlyCheckoutAbortHandler abortHandler = null;
 
+
   public TrustlyWebView(Activity activity, String url) {
     super(activity);
     tryOpeningUrlInWebView(activity, url);
   }
+
 
   private void tryOpeningUrlInWebView(Activity activity, String url) {
     try {
@@ -47,9 +49,13 @@ public class TrustlyWebView extends WebView {
       addJavascriptInterface(new TrustlyJavascriptInterface(activity, this), TrustlyJavascriptInterface.NAME);
 
       setLayoutParams(
-          new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+              new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
 
-      loadUrl(url);
+      if (isValidUrl(url)) {
+        loadUrl(url);
+      } else {
+        Log.e("WebView", "tryOpeningUrlInWebView: Invalid URL: " + url);
+      }
     } catch (WebSettingsException e) {
       Log.d("WebView", "configWebView: Could not config WebSettings");
     } catch (Exception e) {
@@ -67,5 +73,21 @@ public class TrustlyWebView extends WebView {
     } catch (Exception e) {
       throw new WebSettingsException(e.getMessage());
     }
+  }
+
+  private boolean isValidUrl(String url) {
+    if (url == null || url.trim().isEmpty()) {
+      return false;
+    }
+
+    if (url.trim().toLowerCase().startsWith("javascript:")) {
+      return false;
+    }
+
+    if (url.trim().toLowerCase().startsWith("file://")) {
+      return false;
+    }
+    
+    return url.startsWith("https://");
   }
 }
